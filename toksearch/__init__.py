@@ -14,7 +14,9 @@
 
 from .signal.signal import Signal
 from .signal.zarr import ZarrSignal
-from .signal.mds import MdsSignal, MdsTreePath
+from .signal.uda import UDASignal
+
+# from .signal.mds import MdsSignal, MdsTreePath
 from .pipeline.align import XarrayAligner
 from .pipeline import Pipeline
 

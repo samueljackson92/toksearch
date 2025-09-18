@@ -42,7 +42,7 @@ class Signal(ABC):
     resources) when the application is done.
 
     The fetch method is the main method that needs to be called to fetch the
-    data for a shot. It first performs registration of the signal with the 
+    data for a shot. It first performs registration of the signal with the
     SignalRegistry object. It then calls the gather method, which is an abstract
     method that needs to be implemented by subclasses. The gather method is
     responsible for collecting the data for a shot, and should return a dictionary
@@ -182,11 +182,10 @@ class Signal(ABC):
 
         return self
 
-
     def fetch(self, shot: int) -> dict:
         """Fetch the data for a shot
 
-        
+
 
         Arguments:
             shot (int): The shot number to fetch the data for
@@ -248,7 +247,6 @@ class Signal(ABC):
 
         return results
 
-
     @abstractmethod
     def cleanup_shot(self, shot):
         """Close down any per-shot resources needed to fetch data a shot
@@ -270,6 +268,7 @@ class Signal(ABC):
 ################################################################################
 # SignalRegistry Class
 ################################################################################
+
 
 class SignalRegistry:
     """Class to keep track of all signals used in a toksearch application
