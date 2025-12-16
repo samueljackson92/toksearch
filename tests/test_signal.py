@@ -17,7 +17,12 @@ import sys
 import os
 import inspect
 from abc import ABCMeta, abstractmethod
-import MDSplus as mds
+
+try:
+    import MDSplus as mds
+except ImportError:
+    import mdsthin as mds
+
 import numpy as np
 
 from toksearch.signal import Signal
@@ -26,7 +31,6 @@ from toksearch.signal.signal import SignalRegistry
 
 
 class TestSignalRegistry(unittest.TestCase):
-
     def test_register(self):
         reg = SignalRegistry()
         sig = MockSignal()
@@ -83,7 +87,6 @@ class TestSignalRegistry(unittest.TestCase):
 
 
 class TestDimensionedSignal(unittest.TestCase):
-
     def signal(self, **kwargs):
         sig = MockSignal(**kwargs)
         return sig
