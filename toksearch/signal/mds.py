@@ -35,7 +35,11 @@ on a local disk. The MdsTreePath class is used by the MdsLocalSignal class to
 set the environment variables for the MDSplus trees.
 """
 
-import MDSplus as mds
+try:
+    import MDSplus as mds
+except ImportError:
+    import mdsthin as mds
+
 import pdb
 import os
 import contextlib
@@ -98,7 +102,7 @@ class MdsTreePath(object):
 
 class MdsLocalSignal(Signal):
     def __init__(
-        self, 
+        self,
         expression: str,
         treename: str,
         treepath: Union[str, MdsTreePath] = None,
@@ -126,7 +130,7 @@ class MdsLocalSignal(Signal):
             dims: See documentation for the Signal class. Defaults to ('times',)
             data_order: See documentation for the Signal class. Defaults to the same
                 as dims.
-            fetch_units: See documentation for the Signal class. Defaults 
+            fetch_units: See documentation for the Signal class. Defaults
                 to True.
         """
         super().__init__()
@@ -142,10 +146,9 @@ class MdsLocalSignal(Signal):
 
         self.set_dims(dims, data_order)
 
-
     def gather(self, shot):
         """Gather the data for a shot
-        
+
         Arguments:
             shot (int): The shot number to gather the data for
 
@@ -197,7 +200,6 @@ class MdsLocalSignal(Signal):
 
 
 class MdsSignal(Signal):
-
     def __init__(
         self,
         expression: str,
@@ -229,14 +231,19 @@ class MdsSignal(Signal):
             dims: See documentation for the Signal class. Defaults to ('times',)
             data_order: See documentation for the Signal class. Defaults to the same
                 as dims.
-            fetch_units: See documentation for the Signal class. Defaults 
+            fetch_units: See documentation for the Signal class. Defaults
                 to True.
         """
         super().__init__()
 
         self.location = location
         self.sig = self.create_local_or_remote_signal(
-            expression, treename, location, dims=dims, data_order=data_order, fetch_units=fetch_units
+            expression,
+            treename,
+            location,
+            dims=dims,
+            data_order=data_order,
+            fetch_units=fetch_units,
         )
         self.dims = self.sig.dims
         self.data_order = self.sig.data_order
@@ -270,10 +277,9 @@ class MdsSignal(Signal):
 
         return sig
 
-
     def gather(self, shot):
         """Gather the data for a shot
-        
+
         Arguments:
             shot (int): The shot number to gather the data for
 
@@ -285,7 +291,6 @@ class MdsSignal(Signal):
                 of the data and dimensions.
         """
         return self.sig.gather(shot)
-
 
     def cleanup_shot(self, shot: int):
         """Close the tree for this shot
@@ -350,7 +355,7 @@ class MdsRemoteSignal(Signal):
             dims: See documentation for the Signal class. Defaults to ('times',)
             data_order: See documentation for the Signal class. Defaults to the same
                 as dims.
-            fetch_units: See documentation for the Signal class. Defaults 
+            fetch_units: See documentation for the Signal class. Defaults
                 to True.
         """
         super().__init__()
@@ -370,10 +375,9 @@ class MdsRemoteSignal(Signal):
         """Open the connection to remote server"""
         return MdsConnectionRegistry().connect(self.server)
 
-
     def gather(self, shot):
         """Gather the data for a shot
-        
+
         Arguments:
             shot (int): The shot number to gather the data for
 
@@ -398,7 +402,6 @@ class MdsRemoteSignal(Signal):
             dim_expression = _dim_of_expression(self.expression, dim=i)
             results[dim] = connection.get(dim_expression).value
 
-
         if self.with_units:
             units = {}
             units["data"] = connection.get(
@@ -414,7 +417,6 @@ class MdsRemoteSignal(Signal):
             results["units"] = units
 
         return results
-
 
     def cleanup_shot(self, shot):
         """Close all trees for the given shot
@@ -453,7 +455,6 @@ class MdsTreeRegistry(object):
     def open_tree(self, treename, shot, treepath=None):
         tree = self._get_tree(treename, shot)
         if tree is None:
-
             if not treepath:
                 treepath = MdsTreePath()
             elif isinstance(treepath, MdsTreePath):
@@ -495,5 +496,3 @@ class MdsTreeRegistry(object):
         for treename, shots_dict in list(self._tree_map.items()):
             for shot in list(shots_dict.keys()):
                 self.close_tree(treename, shot)
-
-
